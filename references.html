@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Imágenes Aleatorias</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+            height: 100vh;
+            width: 100vw;
+            background: #f0f0f0;
+        }
+        .random-img {
+            position: absolute;
+            transition: transform 0.1s linear;
+            max-width: 240px;
+            max-height: 240px;
+            width: auto;
+            height: auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transform-origin: center center;
+            
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const images = [
+            "media/moodboard/imagen1.jpg",
+            "media/moodboard/imagen2.jpg",
+            "media/moodboard/imagen3.jpg",
+            "media/moodboard/imagen4.jpg",
+            "media/moodboard/imagen5.jpg",
+            "media/moodboard/imagen6.jpg",
+            "media/moodboard/imagen7.jpg",
+            "media/moodboard/imagen8.jpg",
+            "media/moodboard/imagen9.jpg",
+            "media/moodboard/imagen10.jpg",
+            "media/moodboard/imagen11.jpg",
+            "media/moodboard/imagen12.jpg",
+            "media/moodboard/imagen13.jpg",
+            "media/moodboard/imagen14.jpg",
+            "media/moodboard/imagen15.jpg",
+            "media/moodboard/imagen16.jpg",
+            "media/moodboard/imagen17.jpg",
+            "media/moodboard/imagen18.jpg",
+            "media/moodboard/imagen19.jpg"
+            
+
+        ];
+
+        function randomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        window.onload = function() {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            const imgSize = 120;
+            const imgElements = [];
+
+            images.forEach(src => {
+                const img = document.createElement('img');
+                img.src = src;
+                img.className = 'random-img';
+                //img.width = img.height = imgSize;
+                img.style.left = randomInt(0, w - imgSize) + 'px';
+                img.style.top = randomInt(0, h - imgSize) + 'px';
+                document.body.appendChild(img);
+                imgElements.push(img);
+            });
+
+            document.addEventListener('mousemove', e => {
+                const cursorX = e.clientX;
+                const cursorY = e.clientY;
+
+                imgElements.forEach(img => {
+                    const rect = img.getBoundingClientRect();
+                    const imgCenterX = rect.left + rect.width / 2;
+                    const imgCenterY = rect.top + rect.height / 2;
+
+                    const dx = cursorX - imgCenterX;
+                    const dy = cursorY - imgCenterY;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    // Escala entre 1 (lejos) y 2 (muy cerca), ajustable
+                    const maxScale = 2;
+                    const minScale = 1;
+                    const scale = Math.max(minScale, maxScale - distance / 300);
+
+                    img.style.transform = `scale(${scale})`;
+                });
+            });
+
+            Array.from(document.getElementsByClassName('random-img')).forEach(img => {
+                img.addEventListener('mouseenter', () => {
+                    img.style.zIndex = 1000; // Primer plano
+                });
+                img.addEventListener('mouseleave', () => {
+                    img.style.zIndex = 1; // Fondo normal
+                });
+            });
+        };
+
+    </script>
+</body>
+</html>

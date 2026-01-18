@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>MY WORK</title>
+
+    <!-- Google Fonts: Space Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    
+    <style>
+        @font-face {
+            font-family: 'DecimaMonoPro';
+            src: url('fonts/DecimaMonoPro.otf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body, h1, h2, h3, h4, h5, h6, p {
+            font-family: 'DecimaMonoPro', monospace;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            height: 10vh;
+            padding: 0 2vw;
+            display: flex;
+            position: relative;
+            z-index: 10;
+        }
+
+        main {
+            height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            perspective: 1500px;
+            perspective-origin: center center;
+        }
+
+        .left-text-panel {
+            position: absolute;
+            left: 2vw;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            color: #333;
+            font-size: 18px;
+            font-weight: bold;
+            max-width: 25vw;
+            line-height: 1.4;
+        }
+
+        .project-image {
+            width: 100%;
+            max-width: 300px;
+            height: 200px;
+            object-fit: cover;
+            margin-top: 1rem;
+            transition: opacity 0.3s ease;
+        }
+
+        .project-video {
+            width: 100%;
+            max-width: 300px;
+            height: 200px;
+            object-fit: cover;
+            margin-top: 1rem;
+            transition: opacity 0.3s ease;
+        }
+
+        .project-video {
+            width: 100%;
+            max-width: 300px;
+            height: 200px;
+            object-fit: cover;
+            margin-top: 1rem;
+            transition: opacity 0.3s ease;
+        }
+
+        .rectangles-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 50px;
+            margin-bottom: 0;
+            height: 200px;
+            transform-style: preserve-3d;
+            transform: rotateX(-30deg) rotateY(-45deg);
+        }
+
+        .rectangle {
+            width: 20vw;
+            height: 50vh;
+            min-width: 150px;
+            min-height: 200px;
+            background-color: transparent;
+            transition: all 0.5s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            text-align: center;
+            position: absolute;
+            transform-style: preserve-3d;
+            --index: calc(var(--i) - 3);
+            transform: translateZ(calc(var(--index) * 100px));
+        }
+
+        .rectangle:nth-child(1) { 
+            background-color: #e74c3c; 
+            --i: 5;
+        }
+        .rectangle:nth-child(2) { 
+            background-color: #3498db; 
+            --i: 4;
+        }
+        .rectangle:nth-child(3) { 
+            background-color: #2ecc71; 
+            --i: 3;
+        }
+        .rectangle:nth-child(4) { 
+            background-color: #f39c12; 
+            --i: 2;
+        }
+        .rectangle:nth-child(5) { 
+            background-color: #9b59b6; 
+            --i: 1;
+        }
+
+        .rectangle:hover {
+            transform: translateZ(calc(var(--index) * 100px)) translateY(-20px) scale(1.05);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+        }
+
+        .folder-wrapper {
+            width: 20vw;
+            height: 50vh;
+            min-width: 150px;
+            min-height: 200px;
+            margin-bottom: 10px;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            position: absolute;
+            transform-style: preserve-3d;
+            --index: calc(var(--i) - 3);
+            transform: translateZ(calc(var(--index) * 100px));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .folder-icon {
+            width: 100%;
+            height: 100%;
+            transition: transform 0.3s ease;
+        }
+
+        .folder-label-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            padding: 8px 12px;
+            pointer-events: none;
+            text-align: center;
+        }
+
+        .folder-wrapper:nth-child(1) { 
+            --i: 4;
+        }
+        .folder-wrapper:nth-child(2) { 
+            --i: 3;
+        }
+        .folder-wrapper:nth-child(3) { 
+            --i: 2;
+        }
+        .folder-wrapper:nth-child(4) { 
+            --i: 1;
+        }
+
+        .folder-wrapper:hover {
+            transform: translateZ(calc(var(--index) * 100px)) translateY(-20px) scale(1.1) translateX(50px);
+        }
+
+        #modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+        #modal-content {
+            background-color: #00ff1e;
+            border-radius: 8px;
+            box-shadow: 0 0 15px 20px #00ff1e;
+            min-width: 120px;
+            min-height: 40px;
+            width: 80vw;
+            height: 80vh;
+            max-width: 80vw;
+            max-height: 80vh;
+            word-break: break-word;
+            padding: 2em;
+            position: relative;
+            overflow: auto;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+        }
+        
+        #modal-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
+        }
+        
+        #modal-body video {
+            width: 100%;
+            height: auto;
+            max-height: calc(100vh - 200px);
+            object-fit: contain;
+            border-radius: 0px;
+        }
+
+        #modal-body iframe {
+            width: 100%;
+            height: calc(100vh - 250px);
+            min-height: 500px;
+            border: none;
+            border-radius: 0px;
+            margin: 10px 0;
+            background-color: white;
+        }
+
+        #modal-body object {
+            width: 100%;
+            height: calc(100vh - 250px);
+            min-height: 500px;
+            border-radius: 8px;
+        }
+        #close-modal {
+            position: absolute;
+            top: 1em;
+            right: 1em;
+            font-size: 1.5em;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #222;
+            transition: color 0.2s;
+        }
+        #close-modal:hover {
+            color: #e74c3c;
+        }
+
+        /* Personalizar toda la barra de scroll */
+        ::-webkit-scrollbar {
+            width: 12px; /* Ancho de la barra vertical */
+            height: 12px; /* Alto de la barra horizontal */
+        }
+
+        /* Fondo de la barra de scroll */
+        ::-webkit-scrollbar-track {
+            background: transparent;
+            border-radius: 10px;
+        }
+
+        /* El "pulgar" deslizable */
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        /* Hover del pulgar */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Esquinas donde se cruzan barras */
+        ::-webkit-scrollbar-corner {
+            background: #f1f1f1;
+        }
+
+        /* Ocultar scrollbar del modal */
+        #modal-content::-webkit-scrollbar,
+        #modal-body::-webkit-scrollbar {
+            display: none;
+        }
+
+        #modal-content,
+        #modal-body {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* Internet Explorer y Edge */
+        }
+
+        div.modal {
+            width:100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2%;
+            min-height: 60vh;
+        }
+
+        div.modal div {
+            width:49%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <!-- Logo SVG externo -->
+        <img src="logo/svg/logo.svg" alt="Logo IGOR" style="height: 100px; width:auto; display:block; cursor: pointer;" onclick="window.location.href='index.html'" />
+    </header>
+    
+    <main>
+        <!-- Panel de texto izquierdo -->
+        <div class="left-text-panel">
+            <h2 id="dynamic-title">******</h2>
+            <img id="project-image" class="project-image" src="media/projects/default/portfolio.jpg" alt="Portfolio" style="display: none;">
+            <video id="project-video" class="project-video" autoplay muted loop style="display: none;">
+                <source src="" type="video/mp4">
+                Tu navegador no soporta el elemento de video.
+            </video>
+        </div>
+
+        <div class="rectangles-container">
+            <div class="folder-wrapper" data-project="project3">
+                <img src="logo/svg/carpeta.svg" alt="Carpeta" class="folder-icon">
+                <span class="folder-label-center">LOGO</span>
+            </div>
+            <div class="folder-wrapper" data-project="project1">
+                <img src="logo/svg/carpeta.svg" alt="Carpeta" class="folder-icon">
+                <span class="folder-label-center">APHEX TWIN</span>
+            </div>
+            <div class="folder-wrapper" data-project="project2">
+                <img src="logo/svg/carpeta.svg" alt="Carpeta" class="folder-icon">
+                <span class="folder-label-center">HOUSE OF LEAVES</span>
+            </div>
+            <div class="folder-wrapper" data-project="project5">
+                <img src="logo/svg/carpeta.svg" alt="Carpeta" class="folder-icon">
+                <span class="folder-label-center">TWIN DREAM</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div id="modal">
+        <div id="modal-content">
+            <button id="close-modal">&times;</button>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <div aria-rowspan="">
+
+    </div>
+
+                
+
+    <script>
+        // Define el contenido completo para cada proyecto
+        const projectsData = {
+            "project1": {
+                title: "Aphex Twin",
+                media: "media/projects/aphex_twin/aphex_twin.mp4",
+                mediaType: "video",
+                modalHtml: `
+                <h2>Aphex Twin</h2>
+                <div class="modal">
+                    <div>
+                        <p>An After Effects project in which I wanted to experiment with ASCII visuals and object tracking.</p>
+                        <p>The song playing is “Flim” by Aphex Twin.</p>
+                    </div>
+
+                    <div>
+                        <video controls autoplay loop>
+                            <source src="media/projects/aphex_twin/aphex_twin.mp4" type="video/mp4">
+                            Tu navegador no soporta el elemento de video.
+                        </video>
+                    </div>
+                </div>
+              `
+            },
+            "project2": {
+                title: "House of Leaves", 
+                media: "media/projects/house_of_leaves/house_of_leaves.mp4",
+                mediaType: "video",
+                modalHtml: `
+                <h2>House of Leaves</h2>
+                <div class="modal">
+                    <div>
+                        <p>An After Effects project in which we had to create visuals based on a song.</p>
+                        <p>I approached it as if it were a trailer for the book House of Leaves.</p>
+                        <p>The song playing is "Detroit" by Disasterpeace.</p>
+                    </div>
+
+                    <div>
+                        <video controls autoplay loop>
+                            <source src="media/projects/house_of_leaves/house_of_leaves.mp4" type="video/mp4">
+                            Tu navegador no soporta el elemento de video.
+                        </video>
+                    </div>
+                </div>
+
+                `
+                
+            },
+            "project3": {
+                title: "LOGO",
+                media: "media/projects/logo/logo.webm",
+                mediaType: "video",
+                modalHtml: `
+                <h2>LOGO</h2>
+                <div class="modal">
+                    <div>
+                        <p>The logo design was the first thing I worked on for the portfolio.</p>
+                        <p>In the initial sketches, I tried to find a symbol that could represent me. The main reference during this process was the Aphex Twin logo.</p>
+                    </div>
+
+                    <div>
+                        <img src="media/projects/logo/borra (1).jpeg" style="width:auto; max-height:100%;">
+                    </div>
+
+                    <div>
+                        <img src="media/projects/logo/borra (2).jpeg" style="width:auto; max-height:100%;">
+                    </div>
+                </div>
+                <div class="modal">
+                    <div>
+                        <img src="media/projects/logo/ilu.png" style="width:auto; max-height:100%;">
+                    </div>
+
+                    <div>
+                        <p>This design continued to be refined in Illustrator. At this point, it evolved from being a symbol into the full name "Igor."</p>
+                        <p>With this design, a 3D animation was created for it to function like a fly, although it was not ultimately used.</p>
+
+                    </div>
+                </div>
+
+                <div>
+                        <video controls autoplay loop>
+                            <source src="media/projects/logo/logo.webm" type="video/webm">
+                            Tu navegador no soporta el elemento de video.
+                        </video>
+                </div>
+
+                <div class="modal">
+                    <div>
+                        <p>Although I liked the result, I didn’t find it completely personal, so I went back to work on the idea.</p>
+                        <p>Looking for something I could connect with more personally, I came across CAPTCHA texts—small, distorted words used to confirm whether the user is human.</p>
+                    </div>
+
+                    <div>
+                        <img src="logo/svg/logo.svg" style="width:auto; max-height:100%;">
+                    </div>
+                </div>
+                `
+            },
+
+            "project5": {
+                title: "TWIN DREAM",
+                media: "media/projects/twin_dream/twin_dream.mp4",
+                mediaType: "video",
+                modalHtml: `
+                <h2>TWIN DREAM</h2>
+                <div class="modal">
+                    <div>
+                        <p>An experimental visual poster exploring the oniric world of Twin Peaks.</p>
+                        <p>I used the house of Gordon Matta-Clark as base for the relation betwen the american cotidianiti of twin peaks an the onirical.</p>
+                    </div>
+
+                    <div>
+                        <video controls autoplay loop>
+                            <source src="media/projects/twin_dream/twin_dream.mp4" type="video/mp4">
+                            Tu navegador no soporta el elemento de video.
+                        </video>
+                    </div>
+                </div>
+                `
+            }
+        };
+
+        // Asigna eventos click y hover a todos los wrapper de carpetas
+        document.querySelectorAll('.folder-wrapper').forEach(folderWrapper => {
+            // Evento click para modal
+            folderWrapper.addEventListener('click', () => {
+                const projectId = folderWrapper.getAttribute('data-project');
+                if (projectsData[projectId]) {
+                    const project = projectsData[projectId];
+                    
+                    // Cambiar colores del modal
+                    const modalContent = document.getElementById('modal-content');
+                    modalContent.style.backgroundColor = project.modalColor;
+                    modalContent.style.boxShadow = `0 0 15px 20px ${project.modalColor}`;
+                    modalContent.style.color = project.textColor;
+                    
+                    // Aplicar contenido
+                    document.getElementById('modal-body').innerHTML = project.modalHtml;
+                    document.getElementById('modal').style.display = 'flex';
+                    
+                    // Reproducir videos en el modal después de abrirlo
+                    setTimeout(() => {
+                        const modalVideos = document.querySelectorAll('#modal video');
+                        modalVideos.forEach(video => {
+                            video.play();
+                        });
+                    }, 100);
+                }
+            });
+
+            // Evento hover para actualizar texto e imagen/video izquierda
+            folderWrapper.addEventListener('mouseenter', () => {
+                const projectId = folderWrapper.getAttribute('data-project');
+                if (projectsData[projectId]) {
+                    document.getElementById('dynamic-title').textContent = projectsData[projectId].title;
+                    
+                    const imageElement = document.getElementById('project-image');
+                    const videoElement = document.getElementById('project-video');
+                    
+                    // Ocultar ambos elementos primero
+                    imageElement.style.display = 'none';
+                    videoElement.style.display = 'none';
+                    
+                    if (projectsData[projectId].mediaType === 'video') {
+                        videoElement.src = projectsData[projectId].media;
+                        videoElement.style.display = 'block';
+                        videoElement.load(); // Recargar el video
+                    } else {
+                        imageElement.src = projectsData[projectId].media;
+                        imageElement.style.display = 'block';
+                    }
+                }
+            });
+
+            // Restaurar texto por defecto al salir
+            folderWrapper.addEventListener('mouseleave', () => {
+                document.getElementById('dynamic-title').textContent = '******';
+                document.getElementById('project-image').style.display = 'none';
+                document.getElementById('project-video').style.display = 'none';
+                // Solo pausar el video del panel izquierdo, no los del modal
+                const panelVideo = document.getElementById('project-video');
+                if (panelVideo) {
+                    panelVideo.pause();
+                }
+            });
+        });
+
+        // Función para pausar todos los videos
+        function pauseAllVideos() {
+            const videos = document.querySelectorAll('video');
+            videos.forEach(video => {
+                video.pause();
+            });
+        }
+        
+        // Función para reproducir videos en el modal
+        function playModalVideos() {
+            const modalVideos = document.querySelectorAll('#modal video');
+            modalVideos.forEach(video => {
+                video.play();
+            });
+        }
+
+        // Cierra el modal
+        document.getElementById('close-modal').onclick = () => {
+            document.getElementById('modal').style.display = 'none';
+            pauseAllVideos();
+        };
+        document.getElementById('modal').onclick = (e) => {
+            if (e.target === document.getElementById('modal')) {
+                document.getElementById('modal').style.display = 'none';
+                pauseAllVideos();
+            }
+        };
+    </script>
+</body>
+</html>

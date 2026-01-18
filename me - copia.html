@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>WHO IS IGOR?</title>
+
+        <!-- Google Fonts: Space Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    
+    <style>
+        header {
+            height: 10vh;
+            padding: 0 2vw;
+            display: flex;
+        }
+
+        @font-face {
+            font-family: 'DecimaMonoPro';
+            src: url('fonts/DecimaMonoPro.otf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        body, h1, h2, h3, h4, h5, h6, p, button, #mostrar-pestana, #garden {
+            font-family: 'DecimaMonoPro', monospace !important;
+        }
+        h1, h2, h3, h4, h5, h6, p {
+            font-family: "Space Mono", monospace;
+        }
+        body {
+            font-family: "Space Mono", monospace;
+            margin: 0;
+            padding: 0;
+            position: relative;
+        }
+
+        main {
+            position: relative;
+            z-index: 2;
+        }
+
+</style>
+    </style>
+</head>
+<body>
+    <header>
+    <!-- Logo SVG externo -->
+    <img src="logo/svg/logo.svg" alt="Logo IGOR" style="height: 100px; width:auto; display:block; cursor: pointer;" onclick="window.location.href='index.html'" />
+    </header>
+    <main style="padding: 2vw; min-height: 90vh; display: flex; align-items: center; justify-content: center; position: relative; z-index: 2;">
+        <div id="lorem-container" style="max-width: 900px; font-size: 1.3em; line-height: 1.7;">
+            Hi, I’m Igor. Nice to meet you.
+            <br><br>
+            This space was supposed to be my portfolio, but honestly, I don’t really know what it is. I’m having so much fun building it that maybe it’s better to call it my Playground instead of a portfolio.
+            <br><br>
+            And who am I?
+            <br><br>
+            I’m still figuring that out. I grew up in the small country of Andorra, obsessed with movies and videogames. Growing up in the Pyrenees made me fall in love with the mountains, though I didn’t realize it until I moved to Barcelona.
+            <br><br>
+            I’m a person of obsessions: I always find something new to dive into, go down a rabbit hole for two weeks, and then move my attention somewhere else. I don’t know much about anything, but I know a little about a lot, and I’m really happy about that. It allows me to play with different tools, softwares, and ideas until I stumble across something that excites me.
+            <br><br>
+            In Barcelona, I started a degree in audiovisual design, and it quickly became my main obsession. There is something very beautiful about design—something romantic, something I fell in love with. I feel that design can genuinely make people feel good, even happy.
+            <br><br>
+            And that’s what I want to do.
+        </div>
+    </main>
+    <script>
+        const container = document.getElementById('lorem-container');
+        // Envuelve cada palabra en un span
+        function wrapWords(node) {
+            if (node.nodeType === 3) { // Text node
+                const words = node.nodeValue.split(/(\s+)/);
+                const fragment = document.createDocumentFragment();
+                words.forEach(word => {
+                    if (word.trim() === "") {
+                        fragment.appendChild(document.createTextNode(word));
+                    } else {
+                        const span = document.createElement('span');
+                        span.textContent = word;
+                        span.style.display = 'inline-block';
+                        span.style.transition = 'font-size 0.1s';
+                        fragment.appendChild(span);
+                    }
+                });
+                node.parentNode.replaceChild(fragment, node);
+            } else if (node.nodeType === 1 && node.childNodes) {
+                Array.from(node.childNodes).forEach(wrapWords);
+            }
+        }
+        wrapWords(container);
+
+        container.addEventListener('mousemove', function(e) {
+            const rect = container.getBoundingClientRect();
+            const mouseX = e.clientX;
+            const mouseY = e.clientY;
+            let minDist = Infinity;
+            let closestSpan = null;
+            container.querySelectorAll('span').forEach(span => {
+                const spanRect = span.getBoundingClientRect();
+                const spanX = spanRect.left + spanRect.width / 2;
+                const spanY = spanRect.top + spanRect.height / 2;
+                const dist = Math.sqrt((mouseX - spanX) ** 2 + (mouseY - spanY) ** 2);
+                if (dist < minDist) {
+                    minDist = dist;
+                    closestSpan = span;
+                }
+                // Quita fondo y color de todos
+                span.style.background = "";
+                span.style.color = "";
+            });
+            if (closestSpan) {
+                closestSpan.style.background = "#3367d1";
+                closestSpan.style.color = "#fff";
+            }
+        });
+        container.addEventListener('mouseleave', function() {
+            container.querySelectorAll('span').forEach(span => {
+                span.style.background = "";
+                span.style.color = "";
+            });
+        });
+
+
+// Define aquí las palabras y el video asociado (puedes poner las rutas que quieras)
+const wordVideos = {
+    "Igor": "media/me/igor.mp4",
+    "Playground": "media/videos/playground.mp4",
+    "who": "media/me/who.mp4",
+    "Andorra": "media/me/andorra.mp4",
+    "Barcelona": "media/videos/barcelona.mp4",
+    "mountains": "media/me/mountain.mp4",
+    "design": "media/me/design.mp4",
+    "happy": "media/me/happy.mp4"
+};
+
+let bgVideo = null;
+
+container.querySelectorAll('span').forEach(span => {
+    span.addEventListener('mouseenter', function() {
+        // Quita video anterior si existe
+        if (bgVideo) {
+            bgVideo.pause();
+            bgVideo.remove();
+            bgVideo = null;
+        }
+        // Busca video para esta palabra (case-insensitive)
+        const word = span.textContent.replace(/[.,:;!?]/g, "");
+        const videoSrc = wordVideos[word] || wordVideos[word.charAt(0).toUpperCase() + word.slice(1)];
+        if (videoSrc) {
+            bgVideo = document.createElement('video');
+            bgVideo.src = videoSrc;
+            bgVideo.autoplay = true;
+            bgVideo.loop = true;
+            bgVideo.muted = true;
+            bgVideo.style.position = "fixed";
+            bgVideo.style.top = "50%";
+            bgVideo.style.left = "50%";
+            bgVideo.style.transform = "translate(-50%, -50%)";
+            bgVideo.style.width = "auto";
+            bgVideo.style.height = "auto";
+            bgVideo.style.maxWidth = "50vw";
+            bgVideo.style.maxHeight = "50vh";
+            bgVideo.style.objectFit = "contain";
+            bgVideo.style.zIndex = "1";
+            bgVideo.style.pointerEvents = "none";
+            bgVideo.style.opacity = "0.9";
+            document.body.insertBefore(bgVideo, document.body.firstChild);
+        }
+    });
+    span.addEventListener('mouseleave', function() {
+        if (bgVideo) {
+            bgVideo.pause();
+            bgVideo.remove();
+            bgVideo = null;
+        }
+    });
+});
+    </script>
+</body>
+</html>

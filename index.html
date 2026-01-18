@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+<head>
+    <meta charset="UTF-8">
+    <title>IGOR</title>
+
+
+    <style>
+        @font-face {
+            font-family: 'DecimaMonoPro';
+            src: url('fonts/DecimaMonoPro.otf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body, h1, h2, h3, h4, h5, h6, p, button, #mostrar-pestana, #garden {
+            font-family: 'DecimaMonoPro', monospace !important;
+        }
+
+        header {
+            height: 10vh;
+            padding: 0 2vw;
+            display: flex;        
+        }
+        
+        h1, h2, h3, h4, h5, h6, p {
+            color: #000;
+            mix-blend-mode: normal;
+            filter: none;
+            font-family: "Space Mono", monospace;
+        }
+
+        body {
+            background: #fff;
+            
+            margin: 0;
+            padding: 0;
+            font-family: "Space Mono", monospace;
+        }
+
+        .content {
+            display: grid; 
+            grid-template-columns: 25% 50% 25%;
+            grid-template-rows: 32% 32% 32%;
+        }
+
+        #carousel {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        #carousel img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        #mostrar-pestana {
+        position: relative;
+        z-index: 1001;
+        font-family: "Space Mono", monospace;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.5em; 
+        filter: blur(0px);
+        transition: font-size 0.2s;
+        transition: font-weight 0.2s;
+        transition: filter 0.2s;
+        background: none;
+        border: none;
+        
+        }
+
+        #mostrar-pestana:hover {
+        filter: blur(2px);
+        
+        }
+
+        #garden {
+        position: relative;
+        z-index: 1001;
+        font-family: "Space Mono", monospace;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.5em; 
+        filter: blur(0px);
+        transition: font-size 0.2s;
+        transition: font-weight 0.2s;
+        transition: filter 0.2s;
+        background: none;
+        border: none;
+        
+        }
+
+        #garden:hover {
+        color: green;
+        filter: blur(2px);
+        
+        }
+
+        /* Cambia el estilo de todos los botones del carrusel */
+        [id^="carousel"] button {
+            color: #222;
+            border: none;
+            background: transparent;
+            width: 48px;
+            height: 48px;
+            font-size: 2em;
+            cursor: pointer;
+            opacity: 0.85;
+            transition: background 0.2s, color 0.2s, border 0.2s, transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 0;
+        }
+        
+        [id^="carousel"] button svg {
+            width: 24px;
+            height: 24px;
+            transition: transform 0.2s;
+        }
+        
+        [id^="carousel"] button img {
+            width: 48px;
+            height: 48px;
+            transition: transform 0.2s;
+            filter: invert(1); /* Flechas blancas */
+        }
+        
+        [id^="carousel"] button:hover {
+            background: transparent;
+        }
+        
+        [id^="carousel"] button:hover img {
+            filter: brightness(0) saturate(100%) invert(48%) sepia(97%) saturate(4456%) hue-rotate(90deg) brightness(118%) contrast(119%); /* Verde sólido */
+        }
+
+        /* Splash Screen Styles */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 1s ease-out;
+        }
+
+        #splash-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #splash-image {
+            max-width: 300px;
+            max-height: 300px;
+            width: auto;
+            height: auto;
+        }
+
+        /* Texto vertical de Instagram en esquina inferior derecha */
+        #instagram-text {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-family: "Space Mono", monospace;
+            font-size: 1rem;
+            font-weight: 400;
+            color: #222;
+            cursor: pointer;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transition: color 0.3s ease, filter 0.3s ease;
+            z-index: 1000;
+            user-select: none;
+        }
+
+        #instagram-text:hover {
+            color: #e6683c;
+            filter: blur(1px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <img id="splash-image" src="media/base/ascii-art.png" alt="Loading...">
+    </div>
+
+    <header>
+    <!-- Logo SVG externo -->
+    <img src="logo/svg/logo.svg" alt="Logo IGOR" style="height: 100px; width:auto; display:block; cursor: pointer;" onclick="window.location.href='index.html'" />
+    </header>
+    <div class="content" style="height: 80vh;">
+        <div>
+            
+        </div>
+        <div style=" display: block; margin-left: auto; margin-right: auto;">
+            <div id="carousel1" style="position: relative; height: 100%; width: 100%;">
+                <img src="https://picsum.photos/id/1015/600/200" alt="Imagen 1" style="width:100%; height:100%; object-fit:cover; display:block;" id="carousel-img1">
+                <button onclick="prevImage(1)" style="position:absolute; top:50%; left:10px; transform:translateY(-50%);">
+                    <img src="logo/svg/arrowL.svg" alt="Previous" width="48" height="48">
+                </button>
+                <button onclick="nextImage(1)" style="position:absolute; top:50%; right:10px; transform:translateY(-50%);">
+                    <img src="logo/svg/arrowR.svg" alt="Next" width="48" height="48">
+                </button>
+            </div>
+        </div>
+        
+        <div>
+            
+        </div>
+
+        <div style=" height: 100%; padding: 0 2vw;">
+            
+            <div>
+                <button id="mostrar-pestana" type="button" onclick="window.location.href='me - copia.html'">me</button>
+            </div>
+            <div>
+                <button id="mostrar-pestana" type="button" onclick="window.location.href='work.html'">projects</button>
+            </div>
+            <div>
+                <button id="mostrar-pestana" type="button" onclick="window.location.href='construction.html'">references</button>
+            </div>
+            <div>
+                <button id="garden"  type="button" onclick="window.location.href='construction.html'">the garden</button>
+            </div>
+
+        </div>
+
+        <div style=" display: block; margin-left: auto; margin-right: auto;">
+            <div id="carousel2" style="position: relative; height: 100%; width: 100%;">
+                <img src="https://picsum.photos/id/1015/600/200" alt="Imagen 1" style="width:100%; height:100%; object-fit:cover; display:block;" id="carousel-img2">
+                <button onclick="prevImage(2)" style="position:absolute; top:50%; left:10px; transform:translateY(-50%);">
+                    <img src="logo/svg/arrowL.svg" alt="Previous" width="48" height="48">
+                </button>
+                <button onclick="nextImage(2)" style="position:absolute; top:50%; right:10px; transform:translateY(-50%);">
+                    <img src="logo/svg/arrowR.svg" alt="Next" width="48" height="48">
+                </button>
+            </div>
+        </div> 
+        
+        <div>
+            
+        </div>
+
+        <div>
+            
+        </div>
+        
+        <div style=" display: block; margin-left: auto; margin-right: auto;">
+            <div id="carousel3" style="position: relative; height: 100%; width: 100%;">
+                <img src="https://picsum.photos/id/1015/600/200" alt="Imagen 1" style="width:100%; height:100%; object-fit:cover; display:block;" id="carousel-img3">
+                <button onclick="prevImage(3)" style="position:absolute; top:50%; left:10px; transform:translateY(-50%);">
+                    <img src="logo/svg/arrowL.svg" alt="Previous" width="48" height="48">
+                </button>
+                <button onclick="nextImage(3)" style="position:absolute; top:50%; right:10px; transform:translateY(-50%);">
+                    <img src="logo/svg/arrowR.svg" alt="Next" width="48" height="48">
+                </button>
+            </div>
+        </div>
+            
+        <div>
+            
+        </div>
+    </div>
+
+    <!-- Texto vertical de Instagram -->
+    <div id="instagram-text" onclick="window.open('https://www.instagram.com/igor.zip.dsng/', '_blank')" title="Seguir en Instagram">
+       <p>+ Instagram</p> 
+    </div>
+
+</body>
+<script>
+    // Splash Screen functionality
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            const splashScreen = document.getElementById('splash-screen');
+            splashScreen.classList.add('fade-out');
+            
+            // Remove splash screen from DOM after transition
+            setTimeout(function() {
+                splashScreen.remove();
+            }, 1000); // Wait for fade transition to complete
+        }, 1500); // Show splash for 1.5 seconds
+    });
+
+    // Función para generar automáticamente las rutas de imágenes de una carpeta
+    function generateImagePaths(folderPath, maxImages = 20) {
+        const paths = [];
+        for (let i = 1; i <= maxImages; i++) {
+            // Intenta diferentes extensiones comunes
+            const extensions = ['png', 'jpg', 'jpeg', 'gif', 'webp'];
+            for (const ext of extensions) {
+                const path = `${folderPath}/${i}.${ext}`;
+                // En un entorno real, aquí verificarías si el archivo existe
+                // Por ahora, asumimos que siguen el patrón numerado
+                paths.push(path);
+                break; // Solo agrega la primera extensión por imagen
+            }
+        }
+        return paths;
+    }
+
+    // Configuración de carpetas para cada carrusel
+    const carouselConfig = [
+        {
+            folder: "media/face/eyes",
+            maxImages: 10
+        },
+        {
+            folder: "media/face/nose",
+            maxImages: 10
+        },
+        {
+            folder: "media/face/mouth",
+            maxImages: 10
+        }
+    ];
+
+    // Generar automáticamente las rutas de imágenes
+    const images = carouselConfig.map(config => 
+        generateImagePaths(config.folder, config.maxImages)
+    );
+
+    // Función mejorada para verificar si una imagen existe y cargar solo las válidas
+    async function loadValidImages() {
+        const validImages = [];
+        
+        for (let carouselIndex = 0; carouselIndex < carouselConfig.length; carouselIndex++) {
+            const config = carouselConfig[carouselIndex];
+            const carouselImages = [];
+            
+            for (let i = 1; i <= config.maxImages; i++) {
+                const extensions = ['png', 'jpg', 'jpeg', 'gif', 'webp'];
+                let imageFound = false;
+                
+                for (const ext of extensions) {
+                    const imagePath = `${config.folder}/${i}.${ext}`;
+                    
+                    try {
+                        // Verificar si la imagen existe intentando cargarla
+                        await new Promise((resolve, reject) => {
+                            const img = new Image();
+                            img.onload = resolve;
+                            img.onerror = reject;
+                            img.src = imagePath;
+                        });
+                        
+                        carouselImages.push(imagePath);
+                        imageFound = true;
+                        break; // Si encontró la imagen, no buscar más extensiones
+                    } catch (error) {
+                        // La imagen no existe, continúa con la siguiente extensión
+                        continue;
+                    }
+                }
+                
+                // Si no encontró la imagen con ninguna extensión, detener la búsqueda
+                if (!imageFound) {
+                    break;
+                }
+            }
+            
+            validImages.push(carouselImages);
+        }
+        
+        return validImages;
+    }
+
+    // Cargar las imágenes válidas al inicializar
+    loadValidImages().then(validImageArrays => {
+        // Actualizar el array de imágenes con solo las que existen
+        for (let i = 0; i < validImageArrays.length; i++) {
+            if (validImageArrays[i].length > 0) {
+                images[i] = validImageArrays[i];
+            }
+        }
+        
+        // Inicializar los carruseles con imágenes aleatorias
+        for (let i = 1; i <= 3; i++) {
+            if (images[i-1] && images[i-1].length > 0) {
+                const randomIndex = Math.floor(Math.random() * images[i-1].length);
+                currents[i-1] = randomIndex;
+                showImage(i, randomIndex);
+            }
+        }
+    }).catch(error => {
+        console.log("Usando configuración de imágenes por defecto");
+        // Fallback a imágenes por defecto si hay error
+    });
+
+    let currents = [0, 0, 0];
+
+    function showImage(carousel, idx) {
+        document.getElementById('carousel-img' + carousel).src = images[carousel - 1][idx];
+    }
+    function prevImage(carousel) {
+        currents[carousel - 1] = (currents[carousel - 1] - 1 + images[carousel - 1].length) % images[carousel - 1].length;
+        showImage(carousel, currents[carousel - 1]);
+    }
+    function nextImage(carousel) {
+        currents[carousel - 1] = (currents[carousel - 1] + 1) % images[carousel - 1].length;
+        showImage(carousel, currents[carousel - 1]);
+    }
+</script>
+</html>

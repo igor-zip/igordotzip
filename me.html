@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Me</title>
+
+        <!-- Google Fonts: Space Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    
+    <style>
+        header {
+            height: 10vh;
+            padding: 0 2vw;
+            display: flex;
+        }
+
+        @font-face {
+            font-family: 'DecimaMonoPro';
+            src: url('fonts/DecimaMonoPro.otf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        body, h1, h2, h3, h4, h5, h6, p, button, #mostrar-pestana, #garden {
+            font-family: 'DecimaMonoPro', monospace !important;
+        }
+        h1, h2, h3, h4, h5, h6, p {
+            font-family: "Space Mono", monospace;
+        }
+        body {
+            font-family: "Space Mono", monospace;
+        }
+
+</style>
+    </style>
+</head>
+<body>
+    <header>
+    <!-- Logo SVG externo -->
+    <img src="logo/svg/logo.svg" alt="Logo IGOR" style="height: 100px; width:auto; display:block;" />
+    </header>
+    <main style="padding: 2vw; min-height: 90vh; display: flex; align-items: center; justify-content: center;">
+        <div id="lorem-container" style="max-width: 900px; font-size: 1.3em; line-height: 1.7;">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, nisi eu consectetur cursus, nisl erat dictum erat, nec dictum enim urna at sapien. Sed euismod, urna eu tincidunt consectetur, nisi nisl aliquam nunc, eget aliquam nisl nunc euismod nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, urna eu tincidunt consectetur, nisi nisl aliquam nunc, eget aliquam nisl nunc euismod nunc. Pellentesque euismod, nisi eu consectetur cursus, nisl erat dictum erat, nec dictum enim urna at sapien. Sed euismod, urna eu tincidunt consectetur, nisi nisl aliquam nunc, eget aliquam nisl nunc euismod nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, urna eu tincidunt consectetur, nisi nisl aliquam nunc, eget aliquam nisl nunc euismod nunc.
+            <br><br>
+            Mauris non tempor quam, et lacinia sapien. Mauris accumsan eros eget libero posuere vulputate. Etiam elit elit, elementum sed varius at, adipiscing vitae est. Sed nec felis pellentesque, lacinia dui sed, ultricies sapien. Pellentesque orci lectus, consectetur vel posuere posuere, rutrum eu ipsum. Aliquam eget odio sed ligula iaculis consequat at eget orci. Mauris molestie sit amet metus mattis varius. Donec sit amet ligula eget nisi sodales egestas. Aliquam interdum dolor aliquet dolor sollicitudin fermentum. Donec congue lorem a molestie bibendum.
+            <br><br>
+            Proin dictum, quam in hendrerit facilisis, enim diam dictum urna, eget dictum enim urna at sapien. Sed euismod, urna eu tincidunt consectetur, nisi nisl aliquam nunc, eget aliquam nisl nunc euismod nunc. Pellentesque euismod, nisi eu consectetur cursus, nisl erat dictum erat, nec dictum enim urna at sapien. Sed euismod, urna eu tincidunt consectetur, nisi nisl aliquam nunc, eget aliquam nisl nunc euismod nunc.
+        </div>
+    </main>
+    <script>
+        const container = document.getElementById('lorem-container');
+        // Envuelve cada palabra en un span
+        function wrapWords(node) {
+            if (node.nodeType === 3) { // Text node
+                const words = node.nodeValue.split(/(\s+)/);
+                const fragment = document.createDocumentFragment();
+                words.forEach(word => {
+                    if (word.trim() === "") {
+                        fragment.appendChild(document.createTextNode(word));
+                    } else {
+                        const span = document.createElement('span');
+                        span.textContent = word;
+                        span.style.display = 'inline-block';
+                        span.style.transition = 'font-size 0.1s';
+                        fragment.appendChild(span);
+                    }
+                });
+                node.parentNode.replaceChild(fragment, node);
+            } else if (node.nodeType === 1 && node.childNodes) {
+                Array.from(node.childNodes).forEach(wrapWords);
+            }
+        }
+        wrapWords(container);
+
+        container.addEventListener('mousemove', function(e) {
+            const rect = container.getBoundingClientRect();
+            const mouseX = e.clientX;
+            const mouseY = e.clientY;
+            container.querySelectorAll('span').forEach(span => {
+                const spanRect = span.getBoundingClientRect();
+                const spanX = spanRect.left + spanRect.width / 2;
+                const spanY = spanRect.top + spanRect.height / 2;
+                const dist = Math.sqrt((mouseX - spanX) ** 2 + (mouseY - spanY) ** 2);
+                // Color: más cerca = #00ff1e, más lejos = negro
+                const maxDist = 100; // px
+                let percent = 1 - Math.min(dist / maxDist, 1);
+                // De negro (0,0,0) a verde neón (0,255,30)
+                const r = 0;
+                const g = Math.round(255 * percent);
+                const b = Math.round(30 * percent);
+                span.style.color = `rgb(${r},${g},${b})`;
+            });
+        });
+        container.addEventListener('mouseleave', function() {
+            container.querySelectorAll('span').forEach(span => {
+                span.style.color = "";
+            });
+        });
+    </script>
+</body>
+</html>

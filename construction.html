@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+<head>
+    <meta charset="UTF-8">
+    <title>IGOR</title>
+
+
+    <style>
+        @font-face {
+            font-family: 'DecimaMonoPro';
+            src: url('fonts/DecimaMonoPro.otf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body, h1, h2, h3, h4, h5, h6, p, button, #mostrar-pestana, #garden {
+            font-family: 'DecimaMonoPro', monospace !important;
+        }
+
+        header {
+            height: 10vh;
+            padding: 0 2vw;
+            display: flex;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            z-index: 1000;
+        }
+
+        .container {
+            height: calc(100vh - 10vh);
+            display: flex;
+            flex-direction: column;
+            margin-top: 10vh;
+        }
+
+        .top-section {
+            height: 33.33%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .middle-section {
+            height: 33.33%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid #000;
+            position: relative;
+            cursor: grab;
+            user-select: none;
+            background: #fff;
+        }
+
+        .circle.dragging {
+            cursor: grabbing;
+            z-index: 1001;
+        }
+
+        .bottom-section {
+            height: 33.34%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .circle-letter {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'DecimaMonoPro', monospace;
+        }
+
+        #cable-svg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 500;
+        }
+
+        .cable-line {
+            stroke: #000;
+            stroke-width: 10;
+            fill: none;
+            stroke-linecap:round;
+        }
+
+        .cable-line-1 {
+            stroke: #ff3333; /* Rojo */
+            stroke-width: 10;
+            fill: none;
+            stroke-linecap:round;
+        }
+
+        .cable-line-2 {
+            stroke: #33ff33; /* Verde */
+            stroke-width: 10;
+            fill: none;
+            stroke-linecap:round;
+        }
+
+        .cable-line-3 {
+            stroke: #3333ff; /* Azul */
+            stroke-width: 10;
+            fill: none;
+            stroke-linecap:round;
+        }
+
+        .temp-cable {
+            stroke: #000;
+            stroke-width: 10;
+            fill: none;
+            stroke-dasharray: 5,5;
+        }
+
+        .temp-cable-1 {
+            stroke: #ff3333;
+            stroke-width: 10;
+            fill: none;
+            stroke-dasharray: 5,5;
+        }
+
+        .temp-cable-2 {
+            stroke: #33ff33;
+            stroke-width: 10;
+            fill: none;
+            stroke-dasharray: 5,5;
+        }
+
+        .temp-cable-3 {
+            stroke: #3333ff;
+            stroke-width: 10;
+            fill: none;
+            stroke-dasharray: 5,5;
+        }
+
+        .input-circle.highlight {
+            fill: black;
+            transition: fill 0.2s;
+        }
+    </style>
+</head>
+<body>
+    <header>
+    <!-- Logo SVG externo -->
+    <img src="logo/svg/logo.svg" alt="Logo IGOR" style="height: 100px; width:auto; display:block; cursor: pointer;" onclick="window.location.href='index.html'" />
+    </header>
+    
+    <div class="container">
+        <div class="top-section">
+            <h1 style="font-size: 2em; text-align: center;">Under Construction</h1>
+            <p id="connection-status" style="text-align: center;">We need to conect the cables</p>
+        </div>
+        <div class="middle-section">
+            <div>
+                <p>OUTPUT</p>
+            </div>
+            <div class="circle circle1 cable-circle" data-cable="1">    
+            </div>
+            <div class="circle circle2 cable-circle" data-cable="2">    
+            </div>
+            <div class="circle circle3 cable-circle" data-cable="3">    
+            </div>
+        </div>
+        <div class="bottom-section">
+            <div>
+                <p>INPUT</p>
+            </div>
+            <div class="circle circle-a input-circle" data-input="A">
+            </div>
+            <div class="circle circle-b input-circle" data-input="B">
+            </div>
+            <div class="circle circle-c input-circle" data-input="C">
+            </div>
+            <div class="circle circle-d input-circle" data-input="D">
+            </div>
+        </div>
+    </div>
+    
+    <svg id="cable-svg">
+        <!-- Líneas de cables permanentes -->
+        <!-- Línea temporal para arrastre -->
+        <line id="temp-cable" class="temp-cable" x1="0" y1="0" x2="0" y2="0" style="display: none;"></line>
+    </svg>
+
+    <script>
+        let isDragging = false;
+        let currentCable = null;
+        let tempLine = document.getElementById('temp-cable');
+        let connections = {}; // Almacenar conexiones {cable: input}
+        
+        // Obtener posición del centro de un elemento
+        function getElementCenter(element) {
+            const rect = element.getBoundingClientRect();
+            return {
+                x: rect.left + rect.width / 2,
+                y: rect.top + rect.height / 2
+            };
+        }
+
+        // Verificar si todos los cables están conectados
+        function checkAllConnected() {
+            const totalCables = 3; // Cables 1, 2, 3
+            const connectedCables = Object.keys(connections).length;
+            const statusText = document.getElementById('connection-status');
+            
+            if (connectedCables === totalCables) {
+                statusText.textContent = "It appears that an OUTPUT is missing. We'll have to wait until it appears..";
+                statusText.style.fontWeight = "normal";
+            } else {
+                statusText.textContent = "We need to conect the cables";
+                statusText.style.color = "#000";
+                statusText.style.fontWeight = "normal";
+            }
+        }
+
+        // Crear línea de conexión permanente
+        function createConnection(cableId, inputId) {
+            const cableEl = document.querySelector(`[data-cable="${cableId}"]`);
+            const inputEl = document.querySelector(`[data-input="${inputId}"]`);
+            
+            if (cableEl && inputEl) {
+                const cablePos = getElementCenter(cableEl);
+                const inputPos = getElementCenter(inputEl);
+                
+                // Eliminar conexión anterior si existe
+                const oldLine = document.getElementById(`connection-${cableId}`);
+                if (oldLine) oldLine.remove();
+                
+                // Crear nueva línea
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.id = `connection-${cableId}`;
+                line.classList.add(`cable-line-${cableId}`); // Usar clase específica del cable
+                line.setAttribute('x1', cablePos.x);
+                line.setAttribute('y1', cablePos.y);
+                line.setAttribute('x2', inputPos.x);
+                line.setAttribute('y2', inputPos.y);
+                
+                document.getElementById('cable-svg').appendChild(line);
+                connections[cableId] = inputId;
+                
+                // Verificar estado de conexiones
+                checkAllConnected();
+            }
+        }
+
+        // Eventos para cables (círculos numéricos)
+        document.querySelectorAll('.cable-circle').forEach(cable => {
+            cable.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                isDragging = true;
+                currentCable = cable;
+                cable.classList.add('dragging');
+                
+                const cableId = cable.getAttribute('data-cable');
+                
+                // Eliminar conexión existente si existe
+                if (connections[cableId]) {
+                    const oldLine = document.getElementById(`connection-${cableId}`);
+                    if (oldLine) oldLine.remove();
+                    delete connections[cableId];
+                    // Verificar estado después de eliminar conexión
+                    checkAllConnected();
+                }
+                
+                // Limpiar clases anteriores y agregar la clase específica del cable
+                tempLine.className = '';
+                tempLine.classList.add(`temp-cable-${cableId}`);
+                
+                const pos = getElementCenter(cable);
+                tempLine.setAttribute('x1', pos.x);
+                tempLine.setAttribute('y1', pos.y);
+                tempLine.setAttribute('x2', pos.x);
+                tempLine.setAttribute('y2', pos.y);
+                tempLine.style.display = 'block';
+            });
+        });
+
+        // Evento de movimiento del mouse
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging && currentCable) {
+                tempLine.setAttribute('x2', e.clientX);
+                tempLine.setAttribute('y2', e.clientY);
+                
+                // Destacar inputs cuando el mouse está cerca (solo los disponibles)
+                document.querySelectorAll('.input-circle').forEach(input => {
+                    const inputId = input.getAttribute('data-input');
+                    const isInputOccupied = Object.values(connections).includes(inputId);
+                    
+                    if (!isInputOccupied) {
+                        const rect = input.getBoundingClientRect();
+                        const distance = Math.sqrt(
+                            Math.pow(e.clientX - (rect.left + rect.width/2), 2) + 
+                            Math.pow(e.clientY - (rect.top + rect.height/2), 2)
+                        );
+                        
+                        if (distance < 50) {
+                            input.classList.add('highlight');
+                        } else {
+                            input.classList.remove('highlight');
+                        }
+                    } else {
+                        input.classList.remove('highlight');
+                    }
+                });
+            }
+        });
+
+        // Evento de soltar
+        document.addEventListener('mouseup', (e) => {
+            if (isDragging && currentCable) {
+                tempLine.style.display = 'none';
+                
+                // Verificar si se soltó sobre un input
+                const targetInput = document.elementFromPoint(e.clientX, e.clientY);
+                if (targetInput && targetInput.classList.contains('input-circle')) {
+                    const cableId = currentCable.getAttribute('data-cable');
+                    const inputId = targetInput.getAttribute('data-input');
+                    
+                    // Verificar si el input ya tiene una conexión
+                    const isInputOccupied = Object.values(connections).includes(inputId);
+                    
+                    if (!isInputOccupied) {
+                        createConnection(cableId, inputId);
+                        console.log(`Cable ${cableId} conectado a Input ${inputId}`);
+                    } else {
+                        console.log(`Input ${inputId} ya está ocupado`);
+                        // Visual feedback de rechazo
+                        targetInput.style.boxShadow = '0 0 15px #ff0000';
+                        setTimeout(() => {
+                            targetInput.style.boxShadow = '';
+                        }, 500);
+                    }
+                }
+                
+                // Limpiar highlights
+                document.querySelectorAll('.input-circle').forEach(input => {
+                    input.classList.remove('highlight');
+                });
+                
+                currentCable.classList.remove('dragging');
+                isDragging = false;
+                currentCable = null;
+            }
+        });
+
+        // Actualizar posiciones de líneas en redimensionado
+        window.addEventListener('resize', () => {
+            Object.keys(connections).forEach(cableId => {
+                const inputId = connections[cableId];
+                createConnection(cableId, inputId);
+            });
+        });
+    </script>
+    
+</body>
+</html>

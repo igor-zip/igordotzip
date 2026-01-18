@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IGOR'S REFERENCES</title>
+    <style>
+        @font-face {
+            font-family: 'DecimaMonoPro';
+            src: url('fonts/DecimaMonoPro.otf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body, h1, h2, h3, h4, h5, h6, p, button, #mostrar-pestana, #garden, #modal{
+            font-family: 'DecimaMonoPro', monospace !important;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+        }
+        header {
+            height: 10vh;
+            padding: 0 2vw;
+            display: flex;        
+        }
+        .rows-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: stretch;
+            height: 100%;
+        }
+        .row {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0;
+            padding: 0 2vw;
+            transition: background 0.3s;
+        }
+        .row button {
+            padding: 0;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 0;
+            background: none;
+            color: #222;
+            cursor: pointer;
+            transition: none;
+            box-shadow: none;
+            font-family: inherit;
+        }
+        .row button:hover {
+            filter: blur(2px);
+        }
+        .row.red { background: #ffdddd; }
+        .row.yellow { background: #fff9cc; }
+        .row.green { background: #ddffdd; }
+        .row.orange { background: #ffe5cc; }
+        .row.celeste { background: #ccf2ff; }
+
+        #modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+        #modal-content {
+            background-color: #00ff1e;
+            border-radius: 8px;
+            box-shadow: 0 0 15px 20px #00ff1e;
+            min-width: 120px;
+            min-height: 40px;
+            width: 60vw;
+            height: 60vh;
+            max-width: 60vw;
+            max-height: 60vh;
+            word-break: break-word;
+            padding: 2em;
+            position: relative;
+            overflow: auto;
+        }
+        #close-modal {
+            position: absolute;
+            top: 1em;
+            right: 1em;
+            font-size: 1.5em;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #222;
+            transition: color 0.2s;
+        }
+        #close-modal:hover {
+            color: #e74c3c;
+        }
+        #btn-datamosh {
+            position: relative;
+            z-index: 10;
+        }
+        #datamosh-canvas {
+            z-index: 1 !important;
+        }
+    </style>
+</head>
+<body>
+    <header>
+    <!-- Logo SVG externo -->
+    <img src="logo/svg/logo.svg" alt="Logo IGOR" style="height: 100px; width:auto; display:block; cursor: pointer;" onclick="window.location.href='index.html'" />
+    </header>
+
+    <div class="rows-container">
+        <div class="row" id="row1">
+            <button id="btn-aphex">Aphex Twin</button>
+            <button id="btn-brat">brat</button>
+        </div>
+        <div class="row" id="row2">
+            <button id="btn-marathon">Marathon</button>
+            <button id="btn-calculating">Calculating Empires</button>
+        </div>
+        <div class="row" id="row3">
+            <button id="btn-internet">Internet</button>
+            <button id="btn-ccru">ccru</button>
+        </div>
+        <div class="row" id="row4">
+            <button id="btn-radiohead">Radiohead</button>
+            <button id="btn-voynich">Voynich manuscript</button>
+        </div>
+        <div class="row" id="row5">
+            <button id="btn-ps2">Play Station 2</button>
+            <button id="btn-datamosh">Datamosh</button>
+            
+        </div>
+        <div class="row" id="row6">
+            <button id="btn-hausu">Hausu</button>
+        </div>
+        <div class="row" id="row7">
+            <button id="btn-data">Data</button>
+        </div>
+    </div>
+    <!-- Modal limpio, sin estilos inline -->
+    <div id="modal">
+      <div id="modal-content">
+        <button id="close-modal">&times;</button>
+        <div id="modal-body"></div>
+      </div>
+    </div>
+
+    <script>
+        // Selecciona el botón con id="btn-radiohead"
+        const buttonRadiohead = document.getElementById('btn-radiohead');
+        const buttonBrat = document.getElementById('btn-brat');
+        const buttonCalculating = document.getElementById('btn-calculating');
+        const buttonCcru = document.getElementById('btn-ccru');
+        const buttonDatamosh = document.getElementById('btn-datamosh');
+        const buttonData = document.getElementById('btn-data');
+        const allDivs = document.querySelectorAll('div');
+        const rows = [
+            document.getElementById('row1'),
+            document.getElementById('row2'),
+            document.getElementById('row3'),
+            document.getElementById('row4'),
+            document.getElementById('row5'),
+            document.getElementById('row6'),
+            document.getElementById('row7')
+        ];
+        const colors = [
+            '#F6EA4A', // amarillo
+            '#4586C9', // azul
+            '#F26426', // naranja
+            '#4ABA4E', // verde
+            '#ECB21F', // amarillo oscuro
+            '#EC2525', // rojo
+            '#A1E2EB'  // celeste
+        ];
+        const originalFont = document.body.style.fontFamily;
+        const originalBg = document.body.style.backgroundColor;
+        let matrixBgImg = null;
+        let originalTexts = [];
+
+        buttonBrat.addEventListener('mouseenter', () => {
+            document.body.style.setProperty('font-family', 'Arial, sans-serif', 'important');
+            document.body.style.backgroundColor = '#8BCF00';
+        });
+        buttonBrat.addEventListener('mouseleave', () => {
+            document.body.style.removeProperty('font-family');
+            document.body.style.backgroundColor = originalBg || '#f0f0f0';
+        });
+
+        buttonRadiohead.addEventListener('mouseenter', () => {
+            rows.forEach((row, i) => {
+                Array.from(row.children).forEach(btn => {
+                    btn.style.color = colors[i];
+                });
+            });
+        });
+        buttonRadiohead.addEventListener('mouseleave', () => {
+            rows.forEach(row => {
+                Array.from(row.children).forEach(btn => {
+                    btn.style.color = '#222';
+                });
+            });
+        });
+
+        buttonCalculating.addEventListener('mouseenter', () => {
+            allDivs.forEach(div => {
+                div.style.border = '2px dotted black';
+            });
+        });
+        buttonCalculating.addEventListener('mouseleave', () => {
+            allDivs.forEach(div => {
+                div.style.border = '';
+            });
+        });
+
+        buttonCcru.addEventListener('mouseenter', () => {
+            // Cambia fondo a negro
+            document.body.style.backgroundColor = '#000';
+            // Cambia todo el texto a verde matrix
+            document.body.style.color = '#00ff00';
+            document.querySelectorAll('*').forEach(el => {
+                el.style.color = '#00ff00';
+            });
+            // Añade imagen de fondo centrada y detrás de todo
+            if (!matrixBgImg) {
+                matrixBgImg = document.createElement('img');
+                matrixBgImg.src = 'media/references/ccru/ccru.jpg'; // O usa el nombre real del archivo
+                matrixBgImg.style.position = 'fixed';
+                matrixBgImg.style.top = '50%';
+                matrixBgImg.style.left = '50%';
+                matrixBgImg.style.transform = 'translate(-50%, -50%)';
+                matrixBgImg.style.zIndex = '0';
+                matrixBgImg.style.pointerEvents = 'none';
+                matrixBgImg.style.maxWidth = '60vw';
+                matrixBgImg.style.maxHeight = '60vh';
+                matrixBgImg.style.opacity = '1';
+                document.body.appendChild(matrixBgImg);
+            }
+        });
+
+        buttonCcru.addEventListener('mouseleave', () => {
+            // Restaura fondo y color
+            document.body.style.backgroundColor = '#f0f0f0';
+            document.body.style.color = '';
+            document.querySelectorAll('*').forEach(el => {
+                el.style.color = '';
+            });
+            // Quita la imagen de fondo si existe
+            if (matrixBgImg) {
+                matrixBgImg.remove();
+                matrixBgImg = null;
+            }
+        });
+
+        let datamoshCanvas = null;
+        let datamoshInterval = null;
+
+        buttonDatamosh.addEventListener('mouseenter', () => {
+            // Crea el canvas solo si no existe
+            if (!datamoshCanvas) {
+                datamoshCanvas = document.createElement('canvas');
+                datamoshCanvas.id = 'datamosh-canvas';
+                datamoshCanvas.style.position = 'fixed';
+                datamoshCanvas.style.top = '0';
+                datamoshCanvas.style.left = '0';
+                datamoshCanvas.style.width = '100vw';
+                datamoshCanvas.style.height = '100vh';
+                datamoshCanvas.style.pointerEvents = 'none';
+                datamoshCanvas.style.zIndex = '1';
+                document.body.appendChild(datamoshCanvas);
+            }
+            // Ajusta el tamaño real del canvas
+            datamoshCanvas.width = window.innerWidth;
+            datamoshCanvas.height = window.innerHeight;
+
+            // Dibuja píxeles aleatorios continuamente
+            datamoshInterval = setInterval(() => {
+                const ctx = datamoshCanvas.getContext('2d');
+                const imageData = ctx.createImageData(datamoshCanvas.width, datamoshCanvas.height);
+                for (let i = 0; i < imageData.data.length; i += 4) {
+                    imageData.data[i] = Math.random() * 255;     // R
+                    imageData.data[i + 1] = Math.random() * 255; // G
+                    imageData.data[i + 2] = Math.random() * 255; // B
+                    imageData.data[i + 3] = 255;                 // A
+                }
+                ctx.putImageData(imageData, 0, 0);
+            }, 80); // Cambia la velocidad si quieres
+        });
+
+        buttonDatamosh.addEventListener('mouseleave', () => {
+            if (datamoshInterval) {
+                clearInterval(datamoshInterval);
+                datamoshInterval = null;
+            }
+            if (datamoshCanvas) {
+                datamoshCanvas.remove();
+                datamoshCanvas = null;
+            }
+        });
+
+        // Define el contenido para cada botón
+        const modalData = {
+            "btn-aphex": {
+                html: `<h2>Aphex Twin</h2>
+                <img src="media/references/aphex/aphex.jpg" style="max-width:100%;"><p>Richard D. James, conocido como Aphex Twin, es un influyente productor de música electrónica experimental y ambient.</p>`
+            },
+            "btn-marathon": {
+                html: `<h2>Marathon</h2>
+                <img src="media/references/marathon/marathon.jpg" style="max-width:100%;"><p>Marathon es un videojuego de disparos en primera persona desarrollado por Bungie en 1994, precursor de la saga Halo.</p>`
+            },
+            "btn-internet": {
+                html: `<h2>Internet</h2>
+                <img src="media/references/internet/internet.jpg" style="max-width:100%;"><p>La Internet es una red global de computadoras que permite la comunicación y el acceso a información en todo el mundo.</p>`
+            },
+            "btn-ccru": {
+                html: `<h2>CCRU</h2>
+                <img src="media/references/ccru/ccru.jpg" style="max-width:100%;"><p>La Cybernetic Culture Research Unit (CCRU) fue un colectivo de teoría cultural y filosofía experimental en la Universidad de Warwick.</p>`
+            },
+            "btn-radiohead": {
+                html: `<h2>Radiohead</h2>
+                <img src="media/references/radiohead/radiohead.jpg" style="max-width:100%;"><p>Radiohead es una banda británica de rock alternativo conocida por su innovación sonora y letras introspectivas.</p>`
+            },
+            "btn-voynich": {
+                html: `<h2>Voynich Manuscript</h2>
+                <img src="media/references/voynich/voynich.jpg" style="max-width:100%;"><p>El manuscrito Voynich es un libro ilustrado, escrito en un idioma desconocido, que ha desconcertado a criptógrafos y lingüistas durante siglos.</p>`
+            },
+            "btn-ps2": {
+                html: `<h2>Play Station 2</h2>
+                <img src="media/references/ps2/ps2.jpg" style="max-width:100%;"><p>La PlayStation 2 es una consola de videojuegos de Sony, famosa por su extenso catálogo y su impacto en la cultura gamer.</p>`
+            },
+            "btn-datamosh": {
+                html: `<h2>Datamosh</h2>
+                <img src="media/references/datamosh/datamosh.gif" style="max-width:100%;"><p>El datamoshing es una técnica de manipulación de video digital que produce efectos visuales de glitch y compresión.</p>`
+            },
+            "btn-hausu": {
+                html: `<h2>Hausu</h2>
+                <img src="media/references/hausu/hausu.jpg" style="max-width:100%;"><p>Hausu es una película japonesa de terror experimental de 1977, conocida por su estilo visual surrealista y psicodélico.</p>`
+            },
+            "btn-data": {
+                html: `<h2>Data</h2>
+                <img src="media/references/data/data.jpg" style="max-width:100%;"><p>Data puede referirse a información digital, conjuntos de datos o al personaje androide de la serie Star Trek.</p>`
+            },
+            "btn-brat": {
+                html: `<h2>brat</h2>
+                <img src="media/references/brat/brat.jpg" style="max-width:100%;"><p>Brat puede referirse a la cultura Y2K, la estética pop o a la canción viral de Charli XCX.</p>`
+            },
+            "btn-calculating": {
+                html: `<h2>Calculating Empires</h2>
+                <img src="media/references/calculating/calculating.jpg" style="max-width:100%;">
+                <p>Calculating Empires hace referencia a la influencia de la tecnología y los algoritmos en la construcción y el análisis de imperios, tanto históricos como digitales.</p>`
+            }
+        };
+
+        // Asigna el evento a cada botón
+        Object.keys(modalData).forEach(id => {
+            const btn = document.getElementById(id);
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    document.getElementById('modal-body').innerHTML = modalData[id].html;
+                    document.getElementById('modal').style.display = 'flex';
+                });
+            }
+        });
+
+        // Cierra el modal al hacer click en la X o fuera del contenido
+        document.getElementById('close-modal').onclick = () => {
+            document.getElementById('modal').style.display = 'none';
+        };
+        document.getElementById('modal').onclick = (e) => {
+            if (e.target === document.getElementById('modal')) {
+                document.getElementById('modal').style.display = 'none';
+            }
+        };
+
+        buttonData.addEventListener('mouseenter', () => {
+            originalTexts = [];
+            // Selecciona todos los nodos de texto dentro del body
+            const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+            let node;
+            while ((node = walker.nextNode())) {
+                originalTexts.push({node, text: node.nodeValue});
+                // Convierte cada carácter en binario
+                node.nodeValue = node.nodeValue.replace(/\S/g, c =>
+                    c.charCodeAt(0).toString(2).padStart(8, '0')
+                );
+            }
+        });
+
+        buttonData.addEventListener('mouseleave', () => {
+            // Restaura los textos originales
+            originalTexts.forEach(({node, text}) => {
+                node.nodeValue = text;
+            });
+            originalTexts = [];
+        });
+    </script>
+</body>
+</html>
